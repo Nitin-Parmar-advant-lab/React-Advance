@@ -1,48 +1,72 @@
-import { createStore } from "redux";
+// import { createStore } from "redux";
+
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+// other alternative for createSlice is createReducer
+
+import counterSliceReducer from "./counter.js"
+import authSliceReducer from "./auth.js"
+
+// const store = createStore(counterSlice.reducer);
+
+// if for bigger appliction we might have multiple applictions
+// for that we can create store like this:
+// in that we have to define main reducer or default reducer
+
+// const store = configureStore({
+//     reducer: counterSlice.reducer,
+// });
 
 
-const initState = { counter: 0, showCoutnter: true };
+// for multiple reducer we can use object key value for that, like this
 
-const counterReducer = (state = initState, action) => {
-    if (action.type === "increment") {
-        // IMP:
-        // this reducer function returned object will be rewrite/overwrite old object state,
-        // mean it does not change specific part it change the whole object in state
-        // so maintaing old state also we have to write all properited as it was like this way
-        // showCoutnter: state.showCoutnter,
 
-        // so in working with redux, never mutate(change) the existing state
-        // alway override it by returning a brand new state object 
-        return {
-            counter: state.counter + 1,
-            showCoutnter: state.showCoutnter,
-        };
-    }
-
-    if (action.type === "increase") {
-        return {
-            counter: state.counter + action.amount,
-            showCoutnter: state.showCoutnter,
-        };
-    }
-
-    if (action.type === "decrement") {
-        return {
-            counter: state.counter - 1,
-            showCoutnter: state.showCoutnter,
-        };
-    }
-
-    if (action.type === "toggal") {
-        return {
-            showCoutnter: !state.showCoutnter,
-            counter: state.counter,
-        };
-    }
-
-    return state;
-};
-
-const store = createStore(counterReducer);
+const store = configureStore({
+    reducer: { counter: counterSliceReducer, auth: authSliceReducer },
+});
 
 export default store;
+
+// very important
+//----------------------------------------------------
+/*
+Now this is VERY IMPORTANT.
+
+The object key (counter) decides state structure.
+
+It has NOTHING to do with slice name.
+
+You can write:
+
+    const store = configureStore({
+    reducer: { myCustomName: counterSlice.reducer },
+    });
+
+And your state becomes:
+
+    state.myCustomName.counter
+*/
+//----------------------------------------------------
+/*
+Example:
+
+If you use:
+
+reducer: { counter: counterSlice.reducer }
+
+State looks like:
+
+{
+  counter: {
+    counter: 0,
+    showCounter: true
+  }
+}
+
+So in component:
+
+const counter = useSelector(state => state.counter.counter);
+
+// notice that during using the redux state in the main code we still use same hook "useSelector"
+// but the wait we use it slightly change, look that after state we use counter (name of reducer used while configerStore not when creating createSlice )
+and then state actual object 
+*/
