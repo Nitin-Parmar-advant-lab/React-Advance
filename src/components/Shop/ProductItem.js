@@ -10,7 +10,7 @@ const ProductItem = (props) => {
     const { title, price, description, id } = props;
 
     function handleAddToCart() {
-        dispatch(cartAction.addItemToCart({id, title, price}))
+        dispatch(cartAction.addItemToCart({ id, title, price }));
     }
 
     return (
