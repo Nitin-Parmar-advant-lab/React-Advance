@@ -36,8 +36,8 @@ export default function NewChallenge({ onDone }) {
         ) {
             animate(
                 "input, textarea",
-                { x: [-10, 0, 10, 0] },
-                { type: "spring", duration: 0.2, delay: stagger(0.05) },
+                { x: [-15, 0, 15, 0] },
+                { type: "spring", duration: 1, delay: stagger(0.05) },
             );
             return;
         }
@@ -86,8 +86,8 @@ export default function NewChallenge({ onDone }) {
                                 visible: { opacity: 1, scale: [0.8, 1.3, 1] },
                             }}
                             // this will not work we have to sepcify which properites we want
-                            // exit="visible"
-                            exit={{ opacity: 1, scale: 1 }}
+                            exit="visible"
+                            // exit={{ opacity: 1, scale: 1 }}
                             transition={{ type: "spring" }}
                             key={image.alt}
                             onClick={() => handleSelectImage(image)}
