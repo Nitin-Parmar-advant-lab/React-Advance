@@ -1,14 +1,25 @@
-import Post from "./Post.jsx";
+import Post from "./Post.tsx";
 import classes from "./PostsList.module.css";
-import { useLoaderData } from "react-router-dom";
-import type { Post as PostType } from "../type/post.js";
+import { useQuery } from "@tanstack/react-query";
+import { fetchPosts } from "../util/http.ts";
 
 export default function PostList() {
-    const posts = useLoaderData<PostType[]>();
+    const { data: posts, isLoading } = useQuery({
+        queryKey: ["posts"],
+        queryFn: fetchPosts,
+    });
+
+    if (isLoading) {
+        return (
+            <div style={{ textAlign: "center", color: "white" }}>
+                <p>Loading posts...</p>
+            </div>
+        );
+    }
 
     return (
         <>
-            {posts.length > 0 && (
+            {posts && posts.length > 0 && (
                 <ul className={classes.posts}>
                     {posts.map((post) => (
                         <Post
@@ -21,7 +32,7 @@ export default function PostList() {
                 </ul>
             )}
 
-            {posts.length === 0 && (
+            {(!posts || posts.length === 0) && (
                 <div style={{ textAlign: "center", color: "white" }}>
                     <p>Could not find any posts.</p>
                     <p>Maybe create one?</p>

@@ -2,7 +2,8 @@ import classes from "./NewPost.module.css";
 import { Form, Link, redirect } from "react-router-dom";
 import Modal from "../components/Modal";
 import type { ActionFunctionArgs } from "react-router-dom";
-import type { Post as PostType } from "../type/post.js";
+import type { Post as PostType } from "../type/post.ts";
+import { createNewPost, queryClient } from "../util/http.ts";
 
 
 function NewPost() {
@@ -40,16 +41,16 @@ function NewPost() {
 
 export default NewPost;
 
+
+
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
     const postData = Object.fromEntries(formData) as Omit<PostType, "id">;
 
-    await fetch("http://localhost:8080/posts", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
+    await createNewPost(postData);
+
+    queryClient.invalidateQueries({
+        queryKey: ["posts"],
     });
 
     return redirect("/");

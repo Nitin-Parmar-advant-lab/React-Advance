@@ -1,10 +1,26 @@
-import { useLoaderData, Link, type LoaderFunctionArgs } from "react-router-dom";
-import type { Post as PostType } from "../type/post.js";
+import { useQuery } from "@tanstack/react-query";
+import { fetchPost, queryClient } from "../util/http.ts";
+import { Link, useParams, type LoaderFunctionArgs } from "react-router-dom";
 import Modal from "../components/Modal";
 import classes from "./PostDetails.module.css";
 
 function PostDetails() {
-    const post = useLoaderData() as PostType;
+    const { id } = useParams();
+    const { data: post, isLoading } = useQuery({
+        queryKey: ["posts", id],
+        queryFn: () => fetchPost({ id: id! }),
+        enabled: !!id,
+    });
+
+    if (isLoading) {
+        return (
+            <Modal>
+                <div style={{ textAlign: "center", color: "white" }}>
+                    <p>Loading post details...</p>
+                </div>
+            </Modal>
+        );
+    }
 
     if (!post) {
         return (
@@ -33,11 +49,14 @@ function PostDetails() {
 
 export default PostDetails;
 
-export async function loader({ params }: LoaderFunctionArgs) {
-    if (!params.id) {
+export function loader({ params }: LoaderFunctionArgs) {
+    const id = params.id;
+    if (!id) {
         throw new Error("Post ID missing");
     }
-    const response = await fetch("http://localhost:8080/posts/" + params.id);
-    const data: { post: PostType } = await response.json();
-    return data.post;
+    queryClient.prefetchQuery({
+        queryKey: ["posts", id],
+        queryFn: () => fetchPost({ id }),
+    });
+    return null;
 }

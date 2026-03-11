@@ -12,6 +12,7 @@
         "module": "preserve",
         "target": "esnext",
         "types": ["vite/client"],
+        "allowImportingTsExtensions": true,
         // "allowJs": true,
         // For nodejs:
         // "lib": ["esnext"],
