@@ -1,6 +1,9 @@
 import classes from "./NewPost.module.css";
 import { Form, Link, redirect } from "react-router-dom";
 import Modal from "../components/Modal";
+import type { ActionFunctionArgs } from "react-router-dom";
+import type { Post as PostType } from "../type/post.js";
+
 
 function NewPost() {
     return (
@@ -37,9 +40,9 @@ function NewPost() {
 
 export default NewPost;
 
-export async function action({ request }) {
+export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
-    const postData = Object.fromEntries(formData);
+    const postData = Object.fromEntries(formData) as Omit<PostType, "id">;
 
     await fetch("http://localhost:8080/posts", {
         method: "POST",

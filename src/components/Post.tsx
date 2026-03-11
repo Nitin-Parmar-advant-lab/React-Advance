@@ -1,14 +1,17 @@
 import { Link } from "react-router-dom";
 import classes from "./Post.module.css"
+import type { Post as PostType } from "../type/post";
 
-export default function Post({ id, author, body }) {
+type PostProps = Pick<PostType, "id" | "author" | "body">;
+
+export default function Post({ id, author, body }: PostProps) {
     // const choseName = Math.random() > 0.5 ? NAMES[0] : NAMES[1];
 
     return (
         <li className={classes.post}>
             {/* <h1>{choseName}</h1>
             <p>React.js is awesome!</p> */}
-            <Link to={id}>
+            <Link to={`/${id}`}>
                 <p className={classes.author}>{author}</p>
                 <p className={classes.text}>{body}</p>
             </Link>

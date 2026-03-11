@@ -1,9 +1,10 @@
 import Post from "./Post.jsx";
 import classes from "./PostsList.module.css";
 import { useLoaderData } from "react-router-dom";
+import type { Post as PostType } from "../type/post.js";
 
 export default function PostList() {
-    const posts = useLoaderData();
+    const posts = useLoaderData<PostType[]>();
 
     return (
         <>

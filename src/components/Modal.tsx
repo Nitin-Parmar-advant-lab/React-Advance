@@ -1,7 +1,13 @@
 import classes from "./Modal.module.css";
 import { useNavigate } from "react-router-dom";
+import type { ReactNode } from "react";
 
-export default function Modal({ children }) {
+
+type ModalProps = {
+  children: ReactNode;
+};
+
+export default function Modal({ children }: ModalProps) {
     const navigate = useNavigate();
     function closeHandler() {
         navigate("..");

@@ -1,10 +1,10 @@
-import { useLoaderData, Link } from "react-router-dom";
-
+import { useLoaderData, Link, type LoaderFunctionArgs } from "react-router-dom";
+import type { Post as PostType } from "../type/post.js";
 import Modal from "../components/Modal";
 import classes from "./PostDetails.module.css";
 
 function PostDetails() {
-    const post = useLoaderData();
+    const post = useLoaderData() as PostType;
 
     if (!post) {
         return (
@@ -33,8 +33,11 @@ function PostDetails() {
 
 export default PostDetails;
 
-export async function loader({ params }) {
+export async function loader({ params }: LoaderFunctionArgs) {
+    if (!params.id) {
+        throw new Error("Post ID missing");
+    }
     const response = await fetch("http://localhost:8080/posts/" + params.id);
-    const data = await response.json();
+    const data: { post: PostType } = await response.json();
     return data.post;
 }
