@@ -1,7 +1,5 @@
 import { Outlet } from "react-router-dom";
-import PostList from "../components/PostList.jsx";
-//import type { Post as PostType } from "../type/post.js";
-import { fetchPosts, queryClient } from "../util/http.ts";
+import PostList from "../components/PostList.tsx";
 
 function Posts() {
     return (
@@ -16,6 +14,7 @@ function Posts() {
 
 export default Posts;
 
+/*
 // Loader (Imperative) and this is not Component in thatwe have to write useQuerey (Declarative)
 
 export function loader() {
@@ -27,3 +26,4 @@ export function loader() {
     });
     return null;
 }
+*/

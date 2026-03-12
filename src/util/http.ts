@@ -3,22 +3,21 @@ import type { Post as PostType } from "../type/post.ts";
 
 export const queryClient = new QueryClient();
 
-export async function fetchPosts() {
-    const response = await fetch("http://localhost:8080/posts");
-    if (!response.ok) {
-        throw new Error("Failed to fetch posts.");
+export async function fetchPostData({ id, signal }: { id?: string | undefined; signal: AbortSignal }) {
+    let url = "http://localhost:8080/posts";
+    if (id) {
+        url += `/${id}`;
     }
-    const data: { posts: PostType[] } = await response.json();
-    return data.posts;
-}
 
-export async function fetchPost({ id }: { id: string }) {
-    const response = await fetch(`http://localhost:8080/posts/${id}`);
+    const response = await fetch(url, { signal });
+
     if (!response.ok) {
-        throw new Error("Failed to fetch post.");
+        const error = new Error(id ? "Failed to fetch post." : "Failed to fetch posts.");
+        throw error;
     }
-    const data: { post: PostType } = await response.json();
-    return data.post;
+
+    const data = await response.json();
+    return id ? data.post : data.posts;
 }
 
 export async function createNewPost(postData: Omit<PostType, "id">) {

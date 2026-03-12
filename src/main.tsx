@@ -1,10 +1,10 @@
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Posts, { loader as postsLoader } from "./routes/Posts.tsx";
-import NewPost, { action as newPostAction } from "./routes/NewPost.tsx";
+import Posts from "./routes/Posts.tsx";
+import NewPost from "./routes/NewPost.tsx";
 import RootLayout from "./routes/RootLayout.tsx";
-import PostDetails, { loader as postLoader } from "./routes/PostDetails.tsx";
+import PostDetails from "./routes/PostDetails.tsx";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./util/http.ts";
 
@@ -16,17 +16,17 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <Posts />,
-                loader: postsLoader,
+                // loader: postsLoader,
                 children: [
                     {
                         path: "new-post",
                         element: <NewPost />,
-                        action: newPostAction,
+                        // action: newPostAction,
                     },
                     {
                         path: ":id",
                         element: <PostDetails />,
-                        loader: postLoader,
+                        // loader: postLoader,
                     },
                 ],
             },

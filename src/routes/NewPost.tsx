@@ -1,15 +1,35 @@
 import classes from "./NewPost.module.css";
-import { Form, Link, redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Modal from "../components/Modal";
-import type { ActionFunctionArgs } from "react-router-dom";
 import type { Post as PostType } from "../type/post.ts";
-import { createNewPost, queryClient } from "../util/http.ts";
-
+import type { FormEvent } from "react";
+import { useNewPost } from "../hooks/useNewPost.ts";
 
 function NewPost() {
+
+    // const { mutate, isPending, isError, error } = useMutation({
+    //     mutationFn: createNewPost,
+    //     onSuccess: () => {
+    //         queryClient.invalidateQueries({
+    //             queryKey: ["posts"],
+    //         });
+    //         navigate("/");
+    //     },
+    // });
+    
+    const { mutate, isPending, isError, error } = useNewPost();
+
+    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const postData = Object.fromEntries(formData) as Omit<PostType, "id">;
+        
+        mutate(postData);
+    }
+
     return (
         <Modal>
-            <Form method="post" className={classes.form}>
+            <form className={classes.form} onSubmit={handleSubmit}>
                 <p>
                     <label htmlFor="body">Text</label>
                     <textarea
@@ -28,13 +48,20 @@ function NewPost() {
                         required
                     />
                 </p>
+                {isError && (
+                    <p style={{ color: 'red' }}>
+                        Failed to post: {error instanceof Error ? error.message : 'Unknown error'}
+                    </p>
+                )}
                 <p className={classes.actions}>
                     <Link to="..">
                         Cancel
                     </Link>
-                    <button>Submit</button>
+                    <button disabled={isPending}>
+                        {isPending ? "Submitting..." : "Submit"}
+                    </button>
                 </p>
-            </Form>
+            </form>
         </Modal>
     );
 }
@@ -42,16 +69,15 @@ function NewPost() {
 export default NewPost;
 
 
+// export async function action({ request }: ActionFunctionArgs) {
+//     const formData = await request.formData();
+//     const postData = Object.fromEntries(formData) as Omit<PostType, "id">;
 
-export async function action({ request }: ActionFunctionArgs) {
-    const formData = await request.formData();
-    const postData = Object.fromEntries(formData) as Omit<PostType, "id">;
+//     await createNewPost(postData);
 
-    await createNewPost(postData);
+//     queryClient.invalidateQueries({
+//         queryKey: ["posts"],
+//     });
 
-    queryClient.invalidateQueries({
-        queryKey: ["posts"],
-    });
-
-    return redirect("/");
-}
+//     return redirect("/");
+// }

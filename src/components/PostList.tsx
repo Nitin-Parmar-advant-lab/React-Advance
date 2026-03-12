@@ -1,13 +1,10 @@
 import Post from "./Post.tsx";
 import classes from "./PostsList.module.css";
-import { useQuery } from "@tanstack/react-query";
-import { fetchPosts } from "../util/http.ts";
+import { useFetchPost } from "../hooks/useFetchPost.ts";
+import type { Post as PostType } from "../type/post.ts";
 
 export default function PostList() {
-    const { data: posts, isLoading } = useQuery({
-        queryKey: ["posts"],
-        queryFn: fetchPosts,
-    });
+    const { data: posts, isLoading } = useFetchPost<PostType[]>();
 
     if (isLoading) {
         return (

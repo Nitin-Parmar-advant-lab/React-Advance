@@ -1,16 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchPost, queryClient } from "../util/http.ts";
-import { Link, useParams, type LoaderFunctionArgs } from "react-router-dom";
+import { useFetchPost } from "../hooks/useFetchPost.ts";
+import { Link, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import classes from "./PostDetails.module.css";
+import type { Post as PostType } from "../type/post.ts";
 
 function PostDetails() {
     const { id } = useParams();
-    const { data: post, isLoading } = useQuery({
-        queryKey: ["posts", id],
-        queryFn: () => fetchPost({ id: id! }),
-        enabled: !!id,
-    });
+    const { data: post, isLoading } = useFetchPost<PostType>(id!);
 
     if (isLoading) {
         return (
@@ -49,14 +45,14 @@ function PostDetails() {
 
 export default PostDetails;
 
-export function loader({ params }: LoaderFunctionArgs) {
-    const id = params.id;
-    if (!id) {
-        throw new Error("Post ID missing");
-    }
-    queryClient.prefetchQuery({
-        queryKey: ["posts", id],
-        queryFn: () => fetchPost({ id }),
-    });
-    return null;
-}
+// export function loader({ params }: LoaderFunctionArgs) {
+//     const id = params.id;
+//     if (!id) {
+//         throw new Error("Post ID missing");
+//     }
+//     queryClient.prefetchQuery({
+//         queryKey: ["posts", id],
+//         queryFn: () => fetchPost({ id }),
+//     });
+//     return null;
+// }
